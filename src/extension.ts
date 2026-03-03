@@ -92,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
       const { content: preprocessedContent, variables: customVariables } = 
         await variableReplacer.replace(templateContent, nameInput.trim(), targetDir);
 
-      // 7. 输入自定义变量
+      // 8. 输入自定义变量
       const variables: TemplateVariable[] = [];
       for (const varDef of customVariables) {
         const value = await vscode.window.showInputBox({
@@ -102,15 +102,16 @@ export function activate(context: vscode.ExtensionContext) {
         variables.push({ name: varDef.name, value: value || '' });
       }
 
-      // 8. 创建文件
+      // 9. 创建文件
       await fileCreator.createFile({
         templatePath: selectedTemplate.template.path,
         targetPath,
         filename: nameInput.trim(),
-        variables
+        variables,
+        content: preprocessedContent
       });
 
-      // 9. 打开文件
+      // 10. 打开文件
       const document = await vscode.workspace.openTextDocument(targetPath);
       await vscode.window.showTextDocument(document);
 

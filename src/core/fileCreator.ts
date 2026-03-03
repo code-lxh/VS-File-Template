@@ -11,12 +11,12 @@ export class FileCreator {
   }
 
   async createFile(options: CreateFileOptions): Promise<void> {
-    const { templatePath, targetPath, filename, variables } = options;
+    const { templatePath, targetPath, filename, variables, content: preprocessedContent } = options;
     
-    // 读取模板内容
-    let content = fs.readFileSync(templatePath, 'utf-8');
+    // 使用预处理的内容（内置变量已替换）或重新读取模板
+    let content = preprocessedContent ?? fs.readFileSync(templatePath, 'utf-8');
     
-    // 变量替换
+    // 变量替换（自定义变量）
     content = this.variableReplacer.replaceCustomVariables(content, variables);
     
     // 确保目标目录存在

@@ -34,10 +34,20 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (!selectedTemplate) return;
 
-      // 3. 输入文件名
-      const filename = await vscode.window.showInputBox({
-        placeHolder: 'Enter file name',
-        prompt: 'Name of the file to create',
+      // 3. 获取模板后缀
+      const templateName = selectedTemplate.template.name;
+      const templateExt = templateName.includes('.') 
+        ? templateName.substring(templateName.lastIndexOf('.')) 
+        : '';
+      const templateNameWithoutExt = templateName.includes('.')
+        ? templateName.substring(0, templateName.lastIndexOf('.'))
+        : templateName;
+
+      // 4. 输入文件名（不带后缀）
+      const nameInput = await vscode.window.showInputBox({
+        placeHolder: templateNameWithoutExt,
+        prompt: `Enter file name (without "${templateExt}" suffix)`,
+        value: templateNameWithoutExt,
         validateInput: (value) => {
           if (!value || value.trim() === '') {
             return 'File name is required';
@@ -46,16 +56,19 @@ export function activate(context: vscode.ExtensionContext) {
         }
       });
 
-      if (!filename) return;
+      if (!nameInput) return;
 
-      // 4. 获取工作区路径
+      // 自动添加后缀
+      const filename = nameInput.trim() + templateExt;
+
+      // 5. 获取工作区路径
       const workspaceFolders = vscode.workspace.workspaceFolders;
       if (!workspaceFolders) {
         vscode.window.showErrorMessage('No workspace folder open');
         return;
       }
 
-      // 5. 确定目标路径
+      // 6. 确定目标路径
       const targetDir = workspaceFolders[0].uri.fsPath;
       const targetPath = vscode.Uri.joinPath(
         vscode.Uri.file(targetDir),
@@ -72,12 +85,12 @@ export function activate(context: vscode.ExtensionContext) {
         if (overwrite !== 'Yes') return;
       }
 
-      // 6. 读取模板并提取变量
+      // 7. 读取模板并提取变量
       const fs = require('fs');
       let templateContent = fs.readFileSync(selectedTemplate.template.path, 'utf-8');
       
       const { content: preprocessedContent, variables: customVariables } = 
-        await variableReplacer.replace(templateContent, filename.replace(/\.[^/.]+$/, ''), targetDir);
+        await variableReplacer.replace(templateContent, nameInput.trim(), targetDir);
 
       // 7. 输入自定义变量
       const variables: TemplateVariable[] = [];
@@ -93,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
       await fileCreator.createFile({
         templatePath: selectedTemplate.template.path,
         targetPath,
-        filename: filename.replace(/\.[^/.]+$/, ''),
+        filename: nameInput.trim(),
         variables
       });
 

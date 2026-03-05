@@ -117,3 +117,13 @@ export const {{componentName}}: React.FC<{{componentName}}Props> = (props) => {
   "command": "fileTemplate.createFile"
 }
 ```
+
+## 开发
+
+```bash
+npm install
+npm run compile
+
+# 打包成 vsix 插件
+vsce package
+```

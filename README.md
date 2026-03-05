@@ -8,13 +8,25 @@
 - 支持变量替换（内置变量 + 自定义变量）
 - 简洁的命令面板操作
 
+## 首次使用
+
+安装插件后首次使用时，会自动在全局模板目录创建以下示例模板：
+
+- `react/Component.tsx` - React 组件模板
+- `python/main.py` - Python 主文件模板
+- `javascript/module.js` - JavaScript 模块模板
+- `readme.md` - README 模板
+
+你可以直接修改这些示例模板，或删除它们创建自己的模板。
+
 ## 使用
 
-1. 按 `Cmd/Ctrl+Shift+P` 打开命令面板
-2. 输入 "Create File from Template"
-3. 选择模板
-4. 输入文件名
-5. 如有自定义变量，依次输入变量值
+1. 安装插件后，示例模板会自动创建在 `~/.vscode-templates/`
+2. 按 `Cmd/Ctrl+Shift+P` 打开命令面板
+3. 输入 "Create File from Template"
+4. 选择模板
+5. 输入文件名
+6. 如有自定义变量，依次输入变量值
 
 ## 模板目录
 

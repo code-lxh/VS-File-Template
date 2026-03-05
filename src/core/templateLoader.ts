@@ -46,6 +46,11 @@ export class TemplateLoader {
     const items = fs.readdirSync(dirPath);
     
     for (const item of items) {
+      // 跳过隐藏文件和目录（以 . 开头的）
+      if (item.startsWith('.')) {
+        continue;
+      }
+      
       const fullPath = path.join(dirPath, item);
       const stat = fs.statSync(fullPath);
       

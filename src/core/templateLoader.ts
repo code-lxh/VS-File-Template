@@ -15,6 +15,10 @@ export class TemplateLoader {
       : path.join(os.homedir(), '.vscode-templates');
   }
 
+  getGlobalTemplatesPath(): string {
+    return this.globalTemplatesPath;
+  }
+
   async loadTemplates(): Promise<Template[]> {
     const templates: Template[] = [];
     

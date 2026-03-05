@@ -2,10 +2,21 @@ import * as vscode from 'vscode';
 import { TemplateLoader } from './core/templateLoader';
 import { VariableReplacer } from './core/variableReplacer';
 import { FileCreator } from './core/fileCreator';
+import { TemplateInitializer } from './core/templateInitializer';
 import { TemplateVariable } from './types';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   const templateLoader = new TemplateLoader();
+  
+  // Initialize example templates on first use
+  const initializer = new TemplateInitializer(templateLoader.getGlobalTemplatesPath());
+  const created = await initializer.initializeIfNeeded();
+  if (created) {
+    vscode.window.showInformationMessage(
+      'File Template: Example templates created in ' + templateLoader.getGlobalTemplatesPath()
+    );
+  }
+
   const variableReplacer = new VariableReplacer();
   const fileCreator = new FileCreator();
 

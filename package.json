@@ -2,6 +2,10 @@
   "name": "vs-file-template",
   "displayName": "VS-File-Template",
   "description": "Create files from custom templates",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/code-lxh/VS-File-Template.git"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.74.0"

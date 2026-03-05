@@ -3,6 +3,7 @@ import { TemplateLoader } from './core/templateLoader';
 import { VariableReplacer } from './core/variableReplacer';
 import { FileCreator } from './core/fileCreator';
 import { TemplateInitializer } from './core/templateInitializer';
+import { getTargetDirectory } from './core/pathResolver';
 import { TemplateVariable } from './types';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -72,15 +73,14 @@ export async function activate(context: vscode.ExtensionContext) {
       // 自动添加后缀
       const filename = nameInput.trim() + templateExt;
 
-      // 5. 获取工作区路径
-      const workspaceFolders = vscode.workspace.workspaceFolders;
-      if (!workspaceFolders) {
+      // 5. 获取目标目录（优先使用当前编辑器文件所在目录）
+      const targetDir = getTargetDirectory();
+      if (!targetDir) {
         vscode.window.showErrorMessage('No workspace folder open');
         return;
       }
 
-      // 6. 确定目标路径
-      const targetDir = workspaceFolders[0].uri.fsPath;
+      // 6. 确定目标文件路径
       const targetPath = vscode.Uri.joinPath(
         vscode.Uri.file(targetDir),
         filename

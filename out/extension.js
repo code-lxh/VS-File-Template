@@ -5,8 +5,16 @@ const vscode = require("vscode");
 const templateLoader_1 = require("./core/templateLoader");
 const variableReplacer_1 = require("./core/variableReplacer");
 const fileCreator_1 = require("./core/fileCreator");
-function activate(context) {
+const templateInitializer_1 = require("./core/templateInitializer");
+const pathResolver_1 = require("./core/pathResolver");
+async function activate(context) {
     const templateLoader = new templateLoader_1.TemplateLoader();
+    // Initialize example templates on first use
+    const initializer = new templateInitializer_1.TemplateInitializer(templateLoader.getGlobalTemplatesPath());
+    const created = await initializer.initializeIfNeeded();
+    if (created) {
+        vscode.window.showInformationMessage('File Template: Example templates created in ' + templateLoader.getGlobalTemplatesPath());
+    }
     const variableReplacer = new variableReplacer_1.VariableReplacer();
     const fileCreator = new fileCreator_1.FileCreator();
     const disposable = vscode.commands.registerCommand('fileTemplate.createFile', async () => {
@@ -50,14 +58,13 @@ function activate(context) {
                 return;
             // 自动添加后缀
             const filename = nameInput.trim() + templateExt;
-            // 5. 获取工作区路径
-            const workspaceFolders = vscode.workspace.workspaceFolders;
-            if (!workspaceFolders) {
+            // 5. 获取目标目录（优先使用当前编辑器文件所在目录）
+            const targetDir = (0, pathResolver_1.getTargetDirectory)();
+            if (!targetDir) {
                 vscode.window.showErrorMessage('No workspace folder open');
                 return;
             }
-            // 6. 确定目标路径
-            const targetDir = workspaceFolders[0].uri.fsPath;
+            // 6. 确定目标文件路径
             const targetPath = vscode.Uri.joinPath(vscode.Uri.file(targetDir), filename).fsPath;
             // 检查文件是否已存在
             if (await fileCreator.checkFileExists(targetPath)) {

@@ -13,6 +13,9 @@ class TemplateLoader {
             ? customPath.replace(/^~/, os.homedir())
             : path.join(os.homedir(), '.vscode-templates');
     }
+    getGlobalTemplatesPath() {
+        return this.globalTemplatesPath;
+    }
     async loadTemplates() {
         const templates = [];
         // 加载全局模板

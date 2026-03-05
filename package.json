@@ -1,6 +1,6 @@
 {
-  "name": "file-template",
-  "displayName": "File Template",
+  "name": "vs-file-template",
+  "displayName": "VS-File-Template",
   "description": "Create files from custom templates",
   "version": "0.0.1",
   "engines": {
